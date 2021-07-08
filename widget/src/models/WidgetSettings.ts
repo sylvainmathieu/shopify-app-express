@@ -1,5 +1,10 @@
 export type PickerType = "CALENDAR" | "DROPDOWN"
 
+export interface TimeSlot {
+	from: string,
+	to: string
+}
+
 export interface WidgetSettings {
 	pickerType: PickerType
 	locale: string
@@ -13,6 +18,8 @@ export interface WidgetSettings {
 	messages: WidgetMessages
 	isVisible: boolean,
 	singleDatePerOrder?: boolean
+	timeSlotsEnabled?: boolean
+	timeSlots?: TimeSlot[]
 }
 
 export interface WidgetStyles {

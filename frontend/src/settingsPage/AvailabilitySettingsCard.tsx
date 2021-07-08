@@ -5,6 +5,7 @@ import { allWeekDays } from "../../../backend/src/util/constants"
 import { capitalize } from "../util/tools"
 import DisabledDates from "./DisabledDates"
 import { SelectOption } from "@shopify/polaris/dist/types/latest/src/components/Select/Select"
+import TimeSlots from "./TimeSlots"
 
 interface Props {
 	widgetSettings: WidgetSettings
@@ -106,6 +107,9 @@ export default function AvailabilitySettingsCard({ widgetSettings, onWidgetSetti
 			</Card.Section>
 			<Card.Section>
 				<DisabledDates dates={widgetSettings.disabledDates || []} onChange={handleDisabledDatesChange} />
+			</Card.Section>
+			<Card.Section>
+				<TimeSlots widgetSettings={widgetSettings} onWidgetSettingsChange={onWidgetSettingsChange} />
 			</Card.Section>
 		</Card>
 	)
