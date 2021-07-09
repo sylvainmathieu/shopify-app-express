@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { TimeSlot, WidgetSettings } from "../../../widget/src/models/WidgetSettings"
-import { Checkbox, Button, ResourceList, Popover, ResourceItem } from "@shopify/polaris"
+import { Checkbox, Button, Popover, Tag } from "@shopify/polaris"
 import AddTimeSlot from "./AddTimeSlot"
 import _ from "lodash"
 
@@ -10,12 +10,19 @@ interface Props {
 }
 
 export default function TimeSlots({ widgetSettings, onWidgetSettingsChange }: Props) {
-	const [addDateOpen, setAddDateOpen] = useState<boolean>()
+	const [timeSlotOpen, setAddTimeSlotOpen] = useState<boolean>()
 
-	const togglePopoverActive = () => setAddDateOpen((active) => !active)
+	const togglePopoverActive = () => setAddTimeSlotOpen((active) => !active)
 
 	const handleAddTimeSlot = (timeSlot: TimeSlot) => {
 		const timeSlots = _.sortBy([...(widgetSettings.timeSlots || []), timeSlot], "from")
+		onWidgetSettingsChange({ ...widgetSettings, timeSlots })
+		setAddTimeSlotOpen(false)
+	}
+
+	const handleRemoveTimeSlot = (index: number) => () => {
+		const timeSlots = [...(widgetSettings.timeSlots || [])]
+		timeSlots.splice(index, 1)
 		onWidgetSettingsChange({ ...widgetSettings, timeSlots })
 	}
 
@@ -30,19 +37,15 @@ export default function TimeSlots({ widgetSettings, onWidgetSettingsChange }: Pr
 				checked={widgetSettings.timeSlotsEnabled}
 				onChange={(value) => handleTimeSlotsEnabled(value)}
 			/>
-			<div className="timeSlots">
-				<em>No time slots configured yet.</em>
-				<ResourceList
-					resourceName={{ singular: "time slot", plural: "time slots" }}
-					items={widgetSettings.timeSlots || []}
-					renderItem={(timeSlot: TimeSlot) => {
-						return (
-							<ResourceItem id={timeSlot.from + timeSlot.to} onClick={() => {}}>
-								{timeSlot.from} - {timeSlot.to}
-							</ResourceItem>
-						)
-					}}
-				/>
+			<div className="tags">
+				{(widgetSettings.timeSlots || []).map((timeSlot, index) => {
+					return (
+						<Tag key={index} onRemove={handleRemoveTimeSlot(index)}>
+							{`${timeSlot.from} - ${timeSlot.to}`}
+						</Tag>
+					)
+				})}
+				{(widgetSettings.timeSlots || []).length == 0 && <em>No time slots defined</em>}
 			</div>
 			<Popover
 				activator={
@@ -50,8 +53,8 @@ export default function TimeSlots({ widgetSettings, onWidgetSettingsChange }: Pr
 						Add time slot
 					</Button>
 				}
-				active={addDateOpen}
-				onClose={() => setAddDateOpen(false)}
+				active={timeSlotOpen}
+				onClose={() => setAddTimeSlotOpen(false)}
 				preferredAlignment="left"
 			>
 				<AddTimeSlot onAdd={handleAddTimeSlot} />
