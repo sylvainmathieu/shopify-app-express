@@ -6,7 +6,9 @@ import {
 	DEFAULT_DATE_TAG_LABEL,
 	DEFAULT_DAY_OF_WEEK_TAG_LABEL,
 	DEFAULT_DROPDOWN_DEFAULT_OPTION_LABEL,
-	DEFAULT_SINGLE_DATE_PER_ORDER_MESSAGE
+	DEFAULT_SINGLE_DATE_PER_ORDER_MESSAGE,
+	DEFAULT_TIME_SLOT_LABEL,
+	DEFAULT_TIME_SLOT_TAG_LABEL
 } from "../../../backend/src/util/constants"
 
 interface Props {
@@ -30,6 +32,14 @@ export default function MessagesCard({ widgetSettings, onWidgetSettingsChange }:
 						onChange={handleWidgetMessageChange("datePickerLabel")}
 						value={widgetSettings.messages.datePickerLabel}
 					/>
+					{widgetSettings.timeSlotsEnabled && (
+						<TextField
+							label="Time slot label"
+							maxLength={300}
+							onChange={handleWidgetMessageChange("timeSlotLabel")}
+							value={widgetSettings.messages.timeSlotLabel ?? DEFAULT_TIME_SLOT_LABEL}
+						/>
+					)}
 					<TextField
 						label="No date selected error"
 						maxLength={300}
@@ -73,6 +83,14 @@ export default function MessagesCard({ widgetSettings, onWidgetSettingsChange }:
 						onChange={handleWidgetMessageChange("dayOfWeekTagLabel")}
 						value={widgetSettings.messages.dayOfWeekTagLabel ?? DEFAULT_DAY_OF_WEEK_TAG_LABEL}
 					/>
+					{widgetSettings.timeSlotsEnabled && (
+						<TextField
+							label="Order tag time slot label"
+							maxLength={300}
+							onChange={handleWidgetMessageChange("timeSlotLabel")}
+							value={widgetSettings.messages.timeSlotTagLabel ?? DEFAULT_TIME_SLOT_TAG_LABEL}
+						/>
+					)}
 					{widgetSettings.singleDatePerOrder && (
 						<TextField
 							label="Message when a date have already been selected in the order"
