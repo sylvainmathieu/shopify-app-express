@@ -60,9 +60,9 @@ export class WidgetSettings {
 				dropdownDefaultOptionLabel: DEFAULT_DROPDOWN_DEFAULT_OPTION_LABEL,
 				dateTagLabel: DEFAULT_DATE_TAG_LABEL,
 				dayOfWeekTagLabel: DEFAULT_DAY_OF_WEEK_TAG_LABEL,
+				singleDatePerOrderMessage: DEFAULT_SINGLE_DATE_PER_ORDER_MESSAGE,
 				timeSlotLabel: DEFAULT_TIME_SLOT_LABEL,
-				timeSlotTagLabel: DEFAULT_TIME_SLOT_TAG_LABEL,
-				singleDatePerOrderMessage: DEFAULT_SINGLE_DATE_PER_ORDER_MESSAGE
+				timeSlotTagLabel: DEFAULT_TIME_SLOT_TAG_LABEL
 			}
 		})
 	}

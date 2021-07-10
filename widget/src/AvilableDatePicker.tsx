@@ -16,6 +16,7 @@ import {
 	TAG_DATE_FORMAT
 } from "../../backend/src/util/constants"
 import moment, { Moment } from "moment"
+import TimeSlotPicker from "./TimeSlotPicker"
 
 function generateAvailableDates(settings: WidgetSettings): AvailableDate[] {
 	if (!settings) return []
@@ -141,6 +142,7 @@ export default function AvailableDatePicker() {
 				}
 				setFetchingCartData(false)
 			}
+
 			fetchOrderDate()
 		}
 	}, [settings, fetchingCartData])
@@ -282,6 +284,7 @@ export default function AvailableDatePicker() {
                 settings={settings}
             />}
 			{orderDate && <div className="buunto-info-message">{singleDatePerOrderMessage}</div>}
+			{settings.timeSlotsEnabled && settings.timeSlots.length > 0 && <TimeSlotPicker settings={settings}/>}
 		</div>
 	)
 }

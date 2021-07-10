@@ -46,14 +46,16 @@ export interface WidgetStyles {
 
 export interface WidgetMessages {
 	datePickerLabel: string
-	timeSlotLabel?: string
 	noDateSelectedError: string
 	noAvailableDatesError: string
 	soldOut: string
 	dropdownDefaultOptionLabel?: string
-	dateTagLabel?: string
 	dayOfWeekTagLabel?: string
-	timeSlotTagLabel?: string
 	singleDatePerOrderMessage?: string
+	timeSlotTagLabel?: string
+	timeSlotLabel?: string
+	dateTagLabel?: string
+	noTimeSlotSelectedError?: string
+	timeSlotDropdownDefaultOptionLabel?: string
 }
 
