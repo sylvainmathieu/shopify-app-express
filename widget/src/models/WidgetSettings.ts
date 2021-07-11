@@ -15,16 +15,19 @@ export interface WidgetSettings {
 	disabledDates: string[]
 	styles: WidgetStyles
 	mandatoryDateSelect: boolean
+	dateDeselectedFirst?: boolean
 	messages: WidgetMessages
 	isVisible: boolean,
 	singleDatePerOrder?: boolean
 	timeSlotsEnabled?: boolean
 	mandatoryTimeSlot?: boolean
+	timeSlotDeselectedFirst?: boolean
 	timeSlots?: TimeSlot[]
 }
 
 export interface WidgetStyles {
 	errorFontColor: string
+	errorBorderColor?: string
 	calendarBoxShadow: string
 	calendarBorderRadius: string
 	calendarBackgroundColor: string

@@ -13,8 +13,12 @@ export default function TimeSlotCard({ widgetSettings, onWidgetSettingsChange }:
 		onWidgetSettingsChange({ ...widgetSettings, timeSlotsEnabled })
 	}
 
-	const handleMandatoryTimeSlot = (mandatoryTimeSlot: boolean) => {
+	const handleMandatoryTimeSlotChecked = (mandatoryTimeSlot: boolean) => {
 		onWidgetSettingsChange({ ...widgetSettings, mandatoryTimeSlot })
+	}
+
+	const handleTimeSlotDeselectedFirstChecked = (timeSlotDeselectedFirst: boolean) => {
+		onWidgetSettingsChange({ ...widgetSettings, timeSlotDeselectedFirst })
 	}
 
 	return (
@@ -32,7 +36,12 @@ export default function TimeSlotCard({ widgetSettings, onWidgetSettingsChange }:
 					<Checkbox
 						label="A time slot must be selected to be able to add a product to the cart"
 						checked={widgetSettings.mandatoryTimeSlot}
-						onChange={(value) => handleMandatoryTimeSlot(value)}
+						onChange={(value) => handleMandatoryTimeSlotChecked(value)}
+					/>
+					<Checkbox
+						label="The time slot appears deselected at first"
+						checked={widgetSettings.timeSlotDeselectedFirst}
+						onChange={(value) => handleTimeSlotDeselectedFirstChecked(value)}
 					/>
 				</FormLayout>
 			</Card.Section>

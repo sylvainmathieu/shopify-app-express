@@ -100,10 +100,22 @@ async function fetchWidgetSettings(): Promise<WidgetSettings> {
 	return (await response.json()) as WidgetSettings
 }
 
+function isSubmitButtonClick(e: any) {
+	if (e.target.tagName == "BUTTON" && e.target.type == "submit") {
+		return true
+	} else {
+		const button = e.target.closest("button")
+		return button?.type == "submit"
+	}
+	return false
+}
+
 export default function AvailableDatePicker() {
 	const [productAvailabilityData, setProductAvailabilityData] = useState<ProductAvailabilityData>(undefined)
 	const [selectedAvailableDate, setSelectedAvailableDate] = useState<string>(undefined)
-	const [formError, setFormError] = useState<string>(undefined)
+	const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>(undefined)
+	const [dateFormError, setDateFormError] = useState<string>(undefined)
+	const [timeSlotFormError, setTimeSlotFormError] =  useState<string>(undefined)
 	const [orderDate, setOrderDate] = useState<Moment>(undefined)
 	const [fetchingCartData, setFetchingCartData] = useState<boolean>(false)
 
@@ -148,7 +160,7 @@ export default function AvailableDatePicker() {
 	}, [settings, fetchingCartData])
 
 	useEffect(() => {
-		if (settings?.mandatoryDateSelect) {
+		if (!settings?.dateDeselectedFirst) {
 			const firstAvailableDate = availableDates.find(ad => !ad.isSoldOut)
 			if (firstAvailableDate) {
 				setSelectedAvailableDate(firstAvailableDate.date)
@@ -175,7 +187,7 @@ export default function AvailableDatePicker() {
 			anchorElement.addEventListener("previewDataUpdated", () => {
 				const previewDate = getPreviewData()
 				setProductAvailabilityData(previewDate)
-				setFormError(undefined)
+				setDateFormError(undefined)
 			}, false)
 		}
 	}, [])
@@ -209,39 +221,25 @@ export default function AvailableDatePicker() {
 		return (isPreviewMode || settings?.isVisible) && !isDisabled
 	}, [isPreviewMode, settings, isDisabled])
 
+	const hasDateError = useCallback(() => {
+		return !isPreviewMode && anchorElement && isVisible() && settings?.mandatoryDateSelect && !selectedAvailableDate
+	}, [settings, isPreviewMode, anchorElement, isVisible, selectedAvailableDate])
+
+	const hasTimeSlotError = useCallback(() => {
+		return !isPreviewMode && anchorElement && isVisible() && settings?.mandatoryTimeSlot && !selectedTimeSlot
+	}, [settings, isPreviewMode, anchorElement, isVisible, selectedTimeSlot])
+
 	useEffect(() => {
 		if (!isPreviewMode && anchorElement && isVisible()) {
 			const form = anchorElement.closest("form")
 			const onSubmit = (e) => {
-				let resetError = false
-				if (selectedAvailableDate) {
-					if (e.target.tagName == "BUTTON" && e.target.type == "submit") {
-						resetError = true
-					} else {
-						const button = e.target.closest("button")
-						resetError = true
-						if (button && button.type == "submit") {
-						}
+				if (isSubmitButtonClick(e)) {
+					setDateFormError(hasDateError() ? settings.messages.noDateSelectedError : undefined)
+					setTimeSlotFormError(hasTimeSlotError() ? settings.messages.noTimeSlotSelectedError : undefined)
+					if (hasDateError() || hasTimeSlotError()) {
+						e.preventDefault()
+						return false
 					}
-					if (resetError) {
-						setFormError(undefined)
-					}
-					return
-				}
-				if (!settings.mandatoryDateSelect) return
-				let halt = false
-				if (e.target.tagName == "BUTTON" && e.target.type == "submit") {
-					halt = true
-				} else {
-					const button = e.target.closest("button")
-					if (button && button.type == "submit") {
-						halt = true
-					}
-				}
-				if (halt) {
-					setFormError(settings.messages.noDateSelectedError)
-					e.preventDefault()
-					return false
 				}
 			}
 			if (form) {
@@ -251,16 +249,20 @@ export default function AvailableDatePicker() {
 				form.removeEventListener("click", onSubmit)
 			}
 		}
-	}, [selectedAvailableDate, settings, isVisible])
+	}, [selectedAvailableDate, settings, isVisible, hasDateError, hasTimeSlotError])
 
 	useEffect(() => {
 		if (productAvailabilityData && availableDates.length == 0) {
-			setFormError(settings.messages.noAvailableDatesError)
+			setDateFormError(settings.messages.noAvailableDatesError)
 		}
 	}, [productAvailabilityData, availableDates, settings])
 
 	const handleAvailableDateSelect = (value: string | undefined) => {
 		setSelectedAvailableDate(value)
+	}
+
+	const handleTimeSlotSelect = (value: string | undefined) => {
+		setSelectedTimeSlot(value)
 	}
 
 	if (!productAvailabilityData || fetchingCartData || !isVisible()) return undefined
@@ -271,20 +273,26 @@ export default function AvailableDatePicker() {
 		<div className="buunto-date-picker">
 			{widgetStyles && <style>{widgetStyles}</style>}
 			<div className="buunto-date-picker-label">{settings.messages.datePickerLabel}</div>
-			{formError && <div className="buunto-date-picker-error">{formError}</div>}
 			{settings.pickerType == "DROPDOWN" && availableDates.length > 0 && <DropdownDatePicker
                 availableDates={availableDates}
                 onSelect={handleAvailableDateSelect}
                 selectedAvailableDate={selectedAvailableDate}
                 settings={settings}
+				formError={dateFormError}
             />}
 			{settings.pickerType == "CALENDAR" && availableDates.length > 0 && <CalendarDatePicker
                 availableDates={availableDates}
                 onSelect={handleAvailableDateSelect}
                 settings={settings}
+				formError={dateFormError}
             />}
 			{orderDate && <div className="buunto-info-message">{singleDatePerOrderMessage}</div>}
-			{settings.timeSlotsEnabled && settings.timeSlots.length > 0 && <TimeSlotPicker settings={settings}/>}
+			{settings.timeSlotsEnabled && settings.timeSlots.length > 0 && <TimeSlotPicker
+				formError={timeSlotFormError}
+				settings={settings}
+				onSelect={handleTimeSlotSelect}
+				selectedTimeSlot={selectedTimeSlot}
+			/>}
 		</div>
 	)
 }

@@ -99,7 +99,7 @@ export default function MessagesCard({ widgetSettings, onWidgetSettingsChange }:
 							value={widgetSettings.messages.timeSlotLabel ?? DEFAULT_TIME_SLOT_LABEL}
 						/>
 					)}
-					{widgetSettings.timeSlotsEnabled && widgetSettings.mandatoryTimeSlot && (
+					{widgetSettings.timeSlotsEnabled && widgetSettings.dateDeselectedFirst && (
 						<TextField
 							label="Time slot dropdown default option"
 							maxLength={300}

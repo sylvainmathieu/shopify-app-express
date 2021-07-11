@@ -8,7 +8,8 @@ import {
 	DEFAULT_SINGLE_DATE_PER_ORDER_MESSAGE,
 	DEFAULT_TIME_SLOT_DROPDOWN_DEFAULT_OPTION_LABEL,
 	DEFAULT_TIME_SLOT_LABEL,
-	DEFAULT_TIME_SLOT_TAG_LABEL
+	DEFAULT_TIME_SLOT_TAG_LABEL,
+	defaultWidgetStyles
 } from "../util/constants"
 
 export interface WidgetSettingsSchema {
@@ -33,8 +34,11 @@ export class WidgetSettings {
 			mandatoryDateSelect: true,
 			isVisible: false,
 			singleDatePerOrder: false,
+			dateDeselectedFirst: false,
+			timeSlotDeselectedFirst: false,
 			styles: {
 				errorFontColor: "#8b0000",
+				errorBorderColor: defaultWidgetStyles.errorBorderColor,
 				calendarBoxShadow: "0 0 5px rgba(0,0,0,0.15)",
 				calendarBorderRadius: "10px",
 				calendarBackgroundColor: "#ffffff",
