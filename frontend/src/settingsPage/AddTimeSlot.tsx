@@ -26,9 +26,9 @@ function toMinutesOfDay(time: string): number {
 }
 
 export default function AddTimeSlot({ onAdd }: Props) {
-	const [from, setFrom] = useState("")
+	const [from, setFrom] = useState("09:00")
 	const [fromError, setFromError] = useState(false)
-	const [to, setTo] = useState("")
+	const [to, setTo] = useState("18:00")
 	const [toError, setToError] = useState(false)
 
 	const handleAddClick = () => {

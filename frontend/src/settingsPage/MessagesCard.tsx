@@ -6,6 +6,7 @@ import {
 	DEFAULT_DATE_TAG_LABEL,
 	DEFAULT_DAY_OF_WEEK_TAG_LABEL,
 	DEFAULT_DROPDOWN_DEFAULT_OPTION_LABEL,
+	DEFAULT_NO_TIME_SLOT_SELECTED_ERROR,
 	DEFAULT_SINGLE_DATE_PER_ORDER_MESSAGE,
 	DEFAULT_TIME_SLOT_LABEL,
 	DEFAULT_TIME_SLOT_TAG_LABEL
@@ -32,14 +33,6 @@ export default function MessagesCard({ widgetSettings, onWidgetSettingsChange }:
 						onChange={handleWidgetMessageChange("datePickerLabel")}
 						value={widgetSettings.messages.datePickerLabel}
 					/>
-					{widgetSettings.timeSlotsEnabled && (
-						<TextField
-							label="Time slot label"
-							maxLength={300}
-							onChange={handleWidgetMessageChange("timeSlotLabel")}
-							value={widgetSettings.messages.timeSlotLabel ?? DEFAULT_TIME_SLOT_LABEL}
-						/>
-					)}
 					<TextField
 						label="No date selected error"
 						maxLength={300}
@@ -83,14 +76,6 @@ export default function MessagesCard({ widgetSettings, onWidgetSettingsChange }:
 						onChange={handleWidgetMessageChange("dayOfWeekTagLabel")}
 						value={widgetSettings.messages.dayOfWeekTagLabel ?? DEFAULT_DAY_OF_WEEK_TAG_LABEL}
 					/>
-					{widgetSettings.timeSlotsEnabled && (
-						<TextField
-							label="Order tag time slot label"
-							maxLength={300}
-							onChange={handleWidgetMessageChange("timeSlotLabel")}
-							value={widgetSettings.messages.timeSlotTagLabel ?? DEFAULT_TIME_SLOT_TAG_LABEL}
-						/>
-					)}
 					{widgetSettings.singleDatePerOrder && (
 						<TextField
 							label="Message when a date have already been selected in the order"
@@ -100,6 +85,47 @@ export default function MessagesCard({ widgetSettings, onWidgetSettingsChange }:
 								widgetSettings.messages.singleDatePerOrderMessage ??
 								DEFAULT_SINGLE_DATE_PER_ORDER_MESSAGE
 							}
+						/>
+					)}
+				</FormLayout>
+			</Card.Section>
+			<Card.Section>
+				<FormLayout>
+					{widgetSettings.timeSlotsEnabled && (
+						<TextField
+							label="Time slot label"
+							maxLength={300}
+							onChange={handleWidgetMessageChange("timeSlotLabel")}
+							value={widgetSettings.messages.timeSlotLabel ?? DEFAULT_TIME_SLOT_LABEL}
+						/>
+					)}
+					{widgetSettings.timeSlotsEnabled && widgetSettings.mandatoryTimeSlot && (
+						<TextField
+							label="Time slot dropdown default option"
+							maxLength={300}
+							onChange={handleWidgetMessageChange("timeSlotDropdownDefaultOptionLabel")}
+							value={
+								widgetSettings.messages.timeSlotDropdownDefaultOptionLabel ??
+								DEFAULT_DROPDOWN_DEFAULT_OPTION_LABEL
+							}
+						/>
+					)}
+					{widgetSettings.timeSlotsEnabled && widgetSettings.mandatoryTimeSlot && (
+						<TextField
+							label="No time slot selected error"
+							maxLength={300}
+							onChange={handleWidgetMessageChange("noTimeSlotSelectedError")}
+							value={
+								widgetSettings.messages.noTimeSlotSelectedError ?? DEFAULT_NO_TIME_SLOT_SELECTED_ERROR
+							}
+						/>
+					)}
+					{widgetSettings.timeSlotsEnabled && (
+						<TextField
+							label="Order tag time slot label"
+							maxLength={300}
+							onChange={handleWidgetMessageChange("timeSlotTagLabel")}
+							value={widgetSettings.messages.timeSlotTagLabel ?? DEFAULT_TIME_SLOT_TAG_LABEL}
 						/>
 					)}
 				</FormLayout>

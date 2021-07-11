@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import { TimeSlot, WidgetSettings } from "../../../widget/src/models/WidgetSettings"
-import { Checkbox, Button, Popover, Tag } from "@shopify/polaris"
+import { Button, Popover, Tag } from "@shopify/polaris"
 import AddTimeSlot from "./AddTimeSlot"
+import { TimeSlot, WidgetSettings } from "../../../widget/src/models/WidgetSettings"
 import _ from "lodash"
 
 interface Props {
@@ -26,17 +26,8 @@ export default function TimeSlots({ widgetSettings, onWidgetSettingsChange }: Pr
 		onWidgetSettingsChange({ ...widgetSettings, timeSlots })
 	}
 
-	const handleTimeSlotsEnabled = (timeSlotsEnabled: boolean) => {
-		onWidgetSettingsChange({ ...widgetSettings, timeSlotsEnabled })
-	}
-
 	return (
 		<div className="timeSlotsSection">
-			<Checkbox
-				label="Enable the time slot selector"
-				checked={widgetSettings.timeSlotsEnabled}
-				onChange={(value) => handleTimeSlotsEnabled(value)}
-			/>
 			<div className="tags">
 				{(widgetSettings.timeSlots || []).map((timeSlot, index) => {
 					return (

@@ -19,6 +19,7 @@ export interface WidgetSettings {
 	isVisible: boolean,
 	singleDatePerOrder?: boolean
 	timeSlotsEnabled?: boolean
+	mandatoryTimeSlot?: boolean
 	timeSlots?: TimeSlot[]
 }
 
