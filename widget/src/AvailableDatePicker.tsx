@@ -291,7 +291,7 @@ export default function AvailableDatePicker() {
 				formError={dateFormError}
             />}
 			{orderDate && <div className="buunto-info-message">{singleDatePerOrderMessage}</div>}
-			{settings.timeSlotsEnabled && settings.timeSlots.length > 0 && <TimeSlotPicker
+			{settings.timeSlotsEnabled && (settings.timeSlots || []).length > 0 && <TimeSlotPicker
 				formError={timeSlotFormError}
 				settings={settings}
 				onSelect={handleTimeSlotSelect}
