@@ -41,10 +41,11 @@ export default function DropdownDatePicker({ settings, onSelect, availableDates,
 
 	return (
 		<Fragment>
+			{formError && <div className="buunto-error-message">{formError}</div>}
 			<select className={classNames("buunto-date-picker-dropdown", "buunto-dropdown", { "buunto-error": !!formError })}
 					name={`properties[${dateTagLabel}]`}
 					onChange={handleSelect}>
-				{!settings.dateDeselectedFirst && <option value="">{dropdownDefaultOptionLabel}</option>}
+				{settings.dateDeselectedFirst && <option value="">{dropdownDefaultOptionLabel}</option>}
 				{availableDates.map((availableDate) => {
 					const momentDate = parseMoment(settings, availableDate.date, SYSTEM_DATE_FORMAT)
 					const valueDate = momentDate.format(TAG_DATE_FORMAT)
@@ -55,7 +56,6 @@ export default function DropdownDatePicker({ settings, onSelect, availableDates,
 					</option>
 				})}
 			</select>
-			{formError && <div className="buunto-error-message">{formError}</div>}
 			{formattedSelectedDay && <input type="hidden" name={`properties[${dayOfWeekTagLabel}]`} value={formattedSelectedDay}/>}
 		</Fragment>
 	)

@@ -75,6 +75,7 @@ export default function DatePickerSettingsCard({ widgetSettings, onWidgetSetting
 					checked={widgetSettings.mandatoryDateSelect}
 					onChange={(value) => handleMandatoryDateSelectChange(value)}
 				/>
+
 				<Checkbox
 					label="The date appears deselected at first"
 					checked={widgetSettings.dateDeselectedFirst}
