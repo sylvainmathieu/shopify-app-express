@@ -18,7 +18,7 @@ import VisibilityToggle from "./VisibilityToggle"
 
 import { Toast, useAppBridge } from "@shopify/app-bridge-react"
 import { useHistory } from "react-router"
-import TimeSlotsCard from "./TimeSlotCard"
+import TimeSlotsCard from "./timeSlots/TimeSlotCard"
 
 interface Props {}
 

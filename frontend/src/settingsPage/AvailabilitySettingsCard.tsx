@@ -5,7 +5,6 @@ import { allWeekDays } from "../../../backend/src/util/constants"
 import { capitalize } from "../util/tools"
 import DisabledDates from "./DisabledDates"
 import { SelectOption } from "@shopify/polaris/dist/types/latest/src/components/Select/Select"
-import TimeSlotCard from "./TimeSlotCard"
 
 interface Props {
 	widgetSettings: WidgetSettings

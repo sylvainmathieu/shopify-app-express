@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Button, Popover, Tag } from "@shopify/polaris"
 import AddTimeSlot from "./AddTimeSlot"
-import { TimeSlot, WidgetSettings } from "../../../widget/src/models/WidgetSettings"
+import { TimeSlot, WidgetSettings } from "../../../../widget/src/models/WidgetSettings"
 import _ from "lodash"
 import AddTimeSlotException from "./AddTimeSlotException"
 

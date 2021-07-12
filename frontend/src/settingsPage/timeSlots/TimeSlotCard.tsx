@@ -1,5 +1,5 @@
 import React from "react"
-import { WidgetSettings } from "../../../widget/src/models/WidgetSettings"
+import { WidgetSettings } from "../../../../widget/src/models/WidgetSettings"
 import { Checkbox, Card, FormLayout } from "@shopify/polaris"
 import TimeSlots from "./TimeSlots"
 

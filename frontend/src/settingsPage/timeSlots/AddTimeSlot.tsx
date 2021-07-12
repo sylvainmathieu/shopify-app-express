@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FormLayout, Select, Button } from "@shopify/polaris"
-import { TimeSlot } from "../../../widget/src/models/WidgetSettings"
+import { TimeSlot } from "../../../../widget/src/models/WidgetSettings"
 import { SelectOption } from "@shopify/polaris/dist/types/latest/src/components/Select/Select"
 
 interface Props {
