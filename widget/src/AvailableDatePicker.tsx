@@ -5,7 +5,7 @@ import DropdownDatePicker from "./DropdownDatePicker"
 import CalendarDatePicker from "./CalendarDatePicker"
 import { getCssFromWidgetStyles } from "./util/widgetStyles"
 import { ProductAvailabilityData } from "./models/ProductAvailabilityData"
-import { WidgetSettings } from "./models/WidgetSettings"
+import { ConfigDay, WidgetSettings } from "./models/WidgetSettings"
 import { AvailableDate } from "./models/AvailableDate"
 import { getMoment } from "./util/dates"
 import { getDaysBetween } from "../../frontend/src/util/tools"
@@ -273,6 +273,8 @@ export default function AvailableDatePicker() {
 
 	const singleDatePerOrderMessage = settings.messages.singleDatePerOrderMessage || DEFAULT_SINGLE_DATE_PER_ORDER_MESSAGE
 
+	const selectedDay = moment(selectedAvailableDate, SYSTEM_DATE_FORMAT)?.format("dddd")?.toUpperCase() as ConfigDay
+
 	return (
 		<div className="buunto-date-picker">
 			{widgetStyles && <style>{widgetStyles}</style>}
@@ -291,11 +293,12 @@ export default function AvailableDatePicker() {
 				formError={dateFormError}
             />}
 			{orderDate && <div className="buunto-info-message">{singleDatePerOrderMessage}</div>}
-			{settings.timeSlotsEnabled && (settings.timeSlots || []).length > 0 && <TimeSlotPicker
+			{settings.timeSlotsEnabled && Object.keys(settings.timeSlotsByDay || {}).length > 0 && <TimeSlotPicker
 				formError={timeSlotFormError}
 				settings={settings}
 				onSelect={handleTimeSlotSelect}
 				selectedTimeSlot={selectedTimeSlot}
+				configDay={selectedDay || "DEFAULT"}
 			/>}
 		</div>
 	)

@@ -1,5 +1,5 @@
 import React from "react"
-import { WidgetSettings } from "../../../../widget/src/models/WidgetSettings"
+import { ConfigDay, WidgetSettings } from "../../../../widget/src/models/WidgetSettings"
 import { Checkbox, Card, FormLayout } from "@shopify/polaris"
 import TimeSlots from "./TimeSlots"
 
@@ -7,6 +7,17 @@ interface Props {
 	widgetSettings: WidgetSettings
 	onWidgetSettingsChange: (settings: WidgetSettings) => void
 }
+
+const configDays: ConfigDay[] = [
+	"MONDAY",
+	"TUESDAY",
+	"WEDNESDAY",
+	"THURSDAY",
+	"FRIDAY",
+	"SATURDAY",
+	"SUNDAY",
+	"DEFAULT"
+]
 
 export default function TimeSlotCard({ widgetSettings, onWidgetSettingsChange }: Props) {
 	const handleTimeSlotsEnabled = (timeSlotsEnabled: boolean) => {
@@ -21,6 +32,7 @@ export default function TimeSlotCard({ widgetSettings, onWidgetSettingsChange }:
 		onWidgetSettingsChange({ ...widgetSettings, timeSlotDeselectedFirst })
 	}
 
+	const hasExceptions = Object.keys(widgetSettings.timeSlotsByDay || {}).length > 1
 	return (
 		<Card title="Time slot settings">
 			<Card.Section>
@@ -30,9 +42,33 @@ export default function TimeSlotCard({ widgetSettings, onWidgetSettingsChange }:
 						checked={widgetSettings.timeSlotsEnabled}
 						onChange={(value) => handleTimeSlotsEnabled(value)}
 					/>
-					{widgetSettings.timeSlotsEnabled && (
-						<TimeSlots widgetSettings={widgetSettings} onWidgetSettingsChange={onWidgetSettingsChange} />
-					)}
+					{widgetSettings.timeSlotsEnabled &&
+						configDays.map((configDay) => {
+							if (
+								(widgetSettings.timeSlotsByDay &&
+									widgetSettings.timeSlotsByDay[configDay] !== undefined) ||
+								configDay == "DEFAULT"
+							) {
+								return (
+									<div className="timeSlotsConfigDayLabel" key={configDay}>
+										{configDay == "DEFAULT" && hasExceptions && (
+											<div className="label">On any other day:</div>
+										)}
+										{configDay != "DEFAULT" && (
+											<div className="label">On {configDay.toLowerCase()}:</div>
+										)}
+										<TimeSlots
+											widgetSettings={widgetSettings}
+											onWidgetSettingsChange={onWidgetSettingsChange}
+											configDay={configDay}
+											hasExceptions={hasExceptions}
+										/>
+									</div>
+								)
+							} else {
+								return undefined
+							}
+						})}
 					<Checkbox
 						label="A time slot must be selected to be able to add a product to the cart"
 						checked={widgetSettings.mandatoryTimeSlot}
