@@ -66,7 +66,7 @@ export default function TimeSlots({ widgetSettings, onWidgetSettingsChange, conf
 						<AddTimeSlot onAdd={handleAddTimeSlot} />
 					</Popover>
 				</div>
-				{!!widgetSettings.timeSlotsByDay && (
+				{!!widgetSettings.timeSlotsByDay && configDay == "DEFAULT" && (
 					<div className="buttonHolder">
 						<Popover
 							activator={
@@ -78,7 +78,7 @@ export default function TimeSlots({ widgetSettings, onWidgetSettingsChange, conf
 							onClose={() => setAddException(false)}
 							preferredAlignment="left"
 						>
-							<AddTimeSlotException onAdd={handleAddTimeSlotException} />
+							<AddTimeSlotException onAdd={handleAddTimeSlotException} widgetSettings={widgetSettings} />
 						</Popover>
 					</div>
 				)}

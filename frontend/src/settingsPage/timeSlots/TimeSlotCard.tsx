@@ -50,7 +50,7 @@ export default function TimeSlotCard({ widgetSettings, onWidgetSettingsChange }:
 								configDay == "DEFAULT"
 							) {
 								return (
-									<div className="timeSlotsConfigDayLabel" key={configDay}>
+									<div className="timeSlotsConfigDay" key={configDay}>
 										{configDay == "DEFAULT" && hasExceptions && (
 											<div className="label">On any other day:</div>
 										)}
