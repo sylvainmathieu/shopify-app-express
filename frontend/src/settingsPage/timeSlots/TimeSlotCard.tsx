@@ -2,6 +2,7 @@ import React from "react"
 import { ConfigDay, WidgetSettings } from "../../../../widget/src/models/WidgetSettings"
 import { Checkbox, Card, FormLayout } from "@shopify/polaris"
 import TimeSlots from "./TimeSlots"
+import { capitalize } from "../../util/tools"
 
 interface Props {
 	widgetSettings: WidgetSettings
@@ -55,7 +56,7 @@ export default function TimeSlotCard({ widgetSettings, onWidgetSettingsChange }:
 											<div className="label">On any other day:</div>
 										)}
 										{configDay != "DEFAULT" && (
-											<div className="label">On {configDay.toLowerCase()}:</div>
+											<div className="label">On {capitalize(configDay)}:</div>
 										)}
 										<TimeSlots
 											widgetSettings={widgetSettings}

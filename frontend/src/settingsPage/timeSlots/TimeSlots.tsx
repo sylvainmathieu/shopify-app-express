@@ -32,6 +32,12 @@ export default function TimeSlots({ widgetSettings, onWidgetSettingsChange, conf
 		onWidgetSettingsChange({ ...widgetSettings, timeSlotsByDay })
 	}
 
+	const handleRemoveException = (configDay: ConfigDay) => () => {
+		const timeSlotsByDay = _.clone(widgetSettings.timeSlotsByDay) || ({} as TimeSlotByDay)
+		delete timeSlotsByDay[configDay]
+		onWidgetSettingsChange({ ...widgetSettings, timeSlotsByDay })
+	}
+
 	const handleAddTimeSlotException = (configDay: ConfigDay) => {
 		const timeSlotsByDay = _.clone(widgetSettings.timeSlotsByDay) || ({} as TimeSlotByDay)
 		timeSlotsByDay[configDay] = []
@@ -66,6 +72,11 @@ export default function TimeSlots({ widgetSettings, onWidgetSettingsChange, conf
 						<AddTimeSlot onAdd={handleAddTimeSlot} />
 					</Popover>
 				</div>
+				{configDay != "DEFAULT" && (
+					<div className="buttonHolder">
+						<Button onClick={handleRemoveException(configDay)}>Remove exception</Button>
+					</div>
+				)}
 				{!!widgetSettings.timeSlotsByDay && configDay == "DEFAULT" && (
 					<div className="buttonHolder">
 						<Popover
