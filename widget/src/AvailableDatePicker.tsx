@@ -9,9 +9,10 @@ import { ConfigDay, WidgetSettings } from "./models/WidgetSettings"
 import { AvailableDate } from "./models/AvailableDate"
 import { getMoment } from "./util/dates"
 import { getDaysBetween } from "../../frontend/src/util/tools"
+import classNames from "classnames"
 
 import {
-	DEFAULT_DATE_TAG_LABEL, DEFAULT_SINGLE_DATE_PER_ORDER_MESSAGE,
+	DEFAULT_DATE_TAG_LABEL, DEFAULT_SHOW_ON_PAGE, DEFAULT_SINGLE_DATE_PER_ORDER_MESSAGE,
 	SYSTEM_DATE_FORMAT,
 	SYSTEM_DATETIME_FORMAT,
 	TAG_DATE_FORMAT
@@ -19,7 +20,9 @@ import {
 import moment, { Moment } from "moment"
 import TimeSlotPicker, { getTimeSlotsByConfigDay, toTimeSlotValue } from "./TimeSlotPicker"
 import axios from "axios"
-import { anchorElement } from "./app"
+import { productAnchorElement } from "./app"
+
+export type FormAttributeName = "properties" | "attributes"
 
 function generateAvailableDates(settings: WidgetSettings): AvailableDate[] {
 	if (!settings) return []
@@ -56,19 +59,19 @@ function getCurrentDomain() {
 }
 
 function getIsPreviewMode() {
-	return anchorElement?.getAttribute("data-preview") == "true"
+	return productAnchorElement?.getAttribute("data-preview") == "true"
 }
 
 function getPreviewData(): ProductAvailabilityData {
-	return JSON.parse(anchorElement?.getAttribute("data-preview-data"))
+	return JSON.parse(productAnchorElement?.getAttribute("data-preview-data"))
 }
 
 function getProductId() {
-	return anchorElement?.getAttribute("data-productid")
+	return productAnchorElement?.getAttribute("data-productid")
 }
 
 function getIsDisabled() {
-	return anchorElement?.getAttribute("data-disabled") == "true"
+	return productAnchorElement?.getAttribute("data-disabled") == "true"
 }
 
 async function fetchAvailabilityForProduct(): Promise<ProductAvailabilityData> {
@@ -113,7 +116,11 @@ function isSubmitButtonClick(e: any) {
 	return false
 }
 
-export default function AvailableDatePicker() {
+export interface Props {
+	isCartPage?: boolean
+}
+
+export default function AvailableDatePicker({ isCartPage }: Props) {
 	const [productAvailabilityData, setProductAvailabilityData] = useState<ProductAvailabilityData>(undefined)
 	const [selectedAvailableDate, setSelectedAvailableDate] = useState<string>(undefined)
 	const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>(undefined)
@@ -121,6 +128,8 @@ export default function AvailableDatePicker() {
 	const [timeSlotFormError, setTimeSlotFormError] =  useState<string>(undefined)
 	const [orderDate, setOrderDate] = useState<Moment>(undefined)
 	const [fetchingCartData, setFetchingCartData] = useState<boolean>(false)
+
+	console.log({ isCartPage })
 
 	const settings = productAvailabilityData?.settings
 
@@ -196,8 +205,8 @@ export default function AvailableDatePicker() {
 	}, [])
 
 	useEffect(() => {
-		if (anchorElement) {
-			anchorElement.addEventListener("previewDataUpdated", () => {
+		if (productAnchorElement) {
+			productAnchorElement.addEventListener("previewDataUpdated", () => {
 				const previewDate = getPreviewData()
 				setProductAvailabilityData(previewDate)
 				setDateFormError(undefined)
@@ -231,20 +240,24 @@ export default function AvailableDatePicker() {
 	}, [])
 
 	const isVisible = useCallback(() => {
-		return (isPreviewMode || settings?.isVisible) && !isDisabled
-	}, [isPreviewMode, settings, isDisabled])
+		if (isPreviewMode) return true
+		if (isDisabled) return false
+		if (settings === undefined || !settings.isVisible) return false
+		const showOnPage = settings.showOnPage || DEFAULT_SHOW_ON_PAGE
+		return isCartPage ? showOnPage == "CART" : showOnPage == "PRODUCT"
+	}, [isPreviewMode, settings, isDisabled, isCartPage])
 
 	const hasDateError = useCallback(() => {
-		return !isPreviewMode && anchorElement && isVisible() && settings?.mandatoryDateSelect && !selectedAvailableDate
-	}, [settings, isPreviewMode, anchorElement, isVisible, selectedAvailableDate])
+		return !isPreviewMode && productAnchorElement && isVisible() && settings?.mandatoryDateSelect && !selectedAvailableDate
+	}, [settings, isPreviewMode, productAnchorElement, isVisible, selectedAvailableDate])
 
 	const hasTimeSlotError = useCallback(() => {
-		return !isPreviewMode && anchorElement && isVisible() && settings?.mandatoryTimeSlot && !selectedTimeSlot
-	}, [settings, isPreviewMode, anchorElement, isVisible, selectedTimeSlot])
+		return !isPreviewMode && productAnchorElement && isVisible() && settings?.mandatoryTimeSlot && !selectedTimeSlot
+	}, [settings, isPreviewMode, productAnchorElement, isVisible, selectedTimeSlot])
 
 	useEffect(() => {
-		if (!isPreviewMode && anchorElement && isVisible()) {
-			const form = anchorElement.closest("form")
+		if (!isPreviewMode && productAnchorElement && isVisible()) {
+			const form = productAnchorElement.closest("form")
 			const onSubmit = (e) => {
 				if (isSubmitButtonClick(e)) {
 					setDateFormError(hasDateError() ? settings.messages.noDateSelectedError : undefined)
@@ -284,8 +297,10 @@ export default function AvailableDatePicker() {
 
 	const selectedDay = moment(selectedAvailableDate, SYSTEM_DATE_FORMAT)?.format("dddd")?.toUpperCase() as ConfigDay
 
+	const formAttributeName = isCartPage ? "attributes" : "properties"
+
 	return (
-		<div className="buunto-date-picker">
+		<div className={classNames("buunto-date-picker", { "buunto-cart-page": isCartPage })} >
 			{widgetStyles && <style>{widgetStyles}</style>}
 			<div className="buunto-date-picker-label">{settings.messages.datePickerLabel}</div>
 			{settings.pickerType == "DROPDOWN" && availableDates.length > 0 && <DropdownDatePicker
@@ -294,12 +309,14 @@ export default function AvailableDatePicker() {
                 selectedAvailableDate={selectedAvailableDate}
                 settings={settings}
 				formError={dateFormError}
+				formAttributeName={formAttributeName}
             />}
 			{settings.pickerType == "CALENDAR" && availableDates.length > 0 && <CalendarDatePicker
                 availableDates={availableDates}
                 onSelect={handleAvailableDateSelect}
                 settings={settings}
 				formError={dateFormError}
+                formAttributeName={formAttributeName}
             />}
 			{orderDate && <div className="buunto-info-message">{singleDatePerOrderMessage}</div>}
 			{settings.timeSlotsEnabled && Object.keys(settings.timeSlotsByDay || {}).length > 0 && <TimeSlotPicker
@@ -308,6 +325,7 @@ export default function AvailableDatePicker() {
 				onSelect={handleTimeSlotSelect}
 				selectedTimeSlot={selectedTimeSlot}
 				configDay={selectedDay || "DEFAULT"}
+                formAttributeName={formAttributeName}
 			/>}
 		</div>
 	)

@@ -4,24 +4,48 @@ import "./styles/main.less"
 import { anchorId, appUrl } from "./constants"
 import axios from "axios"
 
-export let anchorElement = undefined
+export let productAnchorElement = undefined
+export let cartAnchorElement = undefined
 
 function initWidget() {
-	if (anchorElement) {
+	if (productAnchorElement) {
 		return
 	}
-	anchorElement = document.getElementById(anchorId)
-	if (!anchorElement) {
-		const productForm = document.querySelectorAll("form[action*='/cart/add']")
-		if (productForm?.length === 1) {
-			anchorElement = document.createElement("div")
-			anchorElement.id = anchorId
-			productForm[0].append(anchorElement)
+
+	const isCartPage = document.querySelectorAll("form[action='/cart']").length > 0
+	if (isCartPage) {
+		cartAnchorElement = document.getElementById(anchorId)
+		if (!cartAnchorElement) {
+			const submitButtonContainer = document.querySelectorAll("div.cart__buttons-container")
+			if (submitButtonContainer?.length === 1) {
+				const submitButtonParent = submitButtonContainer[0].closest(":not(.cart__buttons-container)")
+				if (submitButtonParent) {
+					cartAnchorElement = document.createElement("div")
+					cartAnchorElement.id = anchorId
+					submitButtonParent.insertBefore(cartAnchorElement, submitButtonContainer[0])
+				}
+			}
+		}
+	} else {
+		productAnchorElement = document.getElementById(anchorId)
+		if (!productAnchorElement) {
+			const productForm = document.querySelectorAll("form[action*='/cart/add']")
+			if (productForm?.length === 1) {
+				productAnchorElement = document.createElement("div")
+				productAnchorElement.id = anchorId
+				productForm[0].append(productAnchorElement)
+			}
 		}
 	}
-	if (anchorElement) {
+
+	if (productAnchorElement || cartAnchorElement) {
 		try {
-			render(<AvailableDatePicker />, anchorElement)
+			if (productAnchorElement) {
+				render(<AvailableDatePicker />, productAnchorElement)
+			}
+			if (cartAnchorElement) {
+				render(<AvailableDatePicker isCartPage />, cartAnchorElement)
+			}
 		} catch (e) {
 			console.error(e)
 			axios.post(appUrl + "/errors", { error: e.stack }, {
