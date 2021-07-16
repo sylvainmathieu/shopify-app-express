@@ -20,7 +20,7 @@ import {
 import moment, { Moment } from "moment"
 import TimeSlotPicker, { getTimeSlotsByConfigDay, toTimeSlotValue } from "./TimeSlotPicker"
 import axios from "axios"
-import { productAnchorElement } from "./app"
+import { anchorElement } from "./app"
 
 export type FormAttributeName = "properties" | "attributes"
 
@@ -59,19 +59,19 @@ function getCurrentDomain() {
 }
 
 function getIsPreviewMode() {
-	return productAnchorElement?.getAttribute("data-preview") == "true"
+	return anchorElement?.getAttribute("data-preview") == "true"
 }
 
 function getPreviewData(): ProductAvailabilityData {
-	return JSON.parse(productAnchorElement?.getAttribute("data-preview-data"))
+	return JSON.parse(anchorElement?.getAttribute("data-preview-data"))
 }
 
 function getProductId() {
-	return productAnchorElement?.getAttribute("data-productid")
+	return anchorElement?.getAttribute("data-productid")
 }
 
 function getIsDisabled() {
-	return productAnchorElement?.getAttribute("data-disabled") == "true"
+	return anchorElement?.getAttribute("data-disabled") == "true"
 }
 
 async function fetchAvailabilityForProduct(): Promise<ProductAvailabilityData> {
@@ -128,8 +128,6 @@ export default function AvailableDatePicker({ isCartPage }: Props) {
 	const [timeSlotFormError, setTimeSlotFormError] =  useState<string>(undefined)
 	const [orderDate, setOrderDate] = useState<Moment>(undefined)
 	const [fetchingCartData, setFetchingCartData] = useState<boolean>(false)
-
-	console.log({ isCartPage })
 
 	const settings = productAvailabilityData?.settings
 
@@ -205,8 +203,8 @@ export default function AvailableDatePicker({ isCartPage }: Props) {
 	}, [])
 
 	useEffect(() => {
-		if (productAnchorElement) {
-			productAnchorElement.addEventListener("previewDataUpdated", () => {
+		if (anchorElement) {
+			anchorElement.addEventListener("previewDataUpdated", () => {
 				const previewDate = getPreviewData()
 				setProductAvailabilityData(previewDate)
 				setDateFormError(undefined)
@@ -248,18 +246,18 @@ export default function AvailableDatePicker({ isCartPage }: Props) {
 	}, [isPreviewMode, settings, isDisabled, isCartPage])
 
 	const hasDateError = useCallback(() => {
-		return !isPreviewMode && productAnchorElement && isVisible() && settings?.mandatoryDateSelect && !selectedAvailableDate
-	}, [settings, isPreviewMode, productAnchorElement, isVisible, selectedAvailableDate])
+		return !isPreviewMode && anchorElement && isVisible() && settings?.mandatoryDateSelect && !selectedAvailableDate
+	}, [settings, isPreviewMode, anchorElement, isVisible, selectedAvailableDate])
 
 	const hasTimeSlotError = useCallback(() => {
-		return !isPreviewMode && productAnchorElement && isVisible() && settings?.mandatoryTimeSlot && !selectedTimeSlot
-	}, [settings, isPreviewMode, productAnchorElement, isVisible, selectedTimeSlot])
+		return !isPreviewMode && anchorElement && isVisible() && settings?.mandatoryTimeSlot && !selectedTimeSlot
+	}, [settings, isPreviewMode, anchorElement, isVisible, selectedTimeSlot])
 
 	useEffect(() => {
-		if (!isPreviewMode && productAnchorElement && isVisible()) {
-			const form = productAnchorElement.closest("form")
+		if (!isPreviewMode && anchorElement && isVisible()) {
+			const form = anchorElement.closest("form")
 			const onSubmit = (e) => {
-				if (isSubmitButtonClick(e)) {
+				if (isCartPage || isSubmitButtonClick(e)) {
 					setDateFormError(hasDateError() ? settings.messages.noDateSelectedError : undefined)
 					setTimeSlotFormError(hasTimeSlotError() ? settings.messages.noTimeSlotSelectedError : undefined)
 					if (hasDateError() || hasTimeSlotError()) {
@@ -269,10 +267,10 @@ export default function AvailableDatePicker({ isCartPage }: Props) {
 				}
 			}
 			if (form) {
-				form.addEventListener("click", onSubmit)
+				form.addEventListener(isCartPage ? "submit" : "click", onSubmit)
 			}
 			return () => {
-				form.removeEventListener("click", onSubmit)
+				form.removeEventListener(isCartPage ? "submit" : "click", onSubmit)
 			}
 		}
 	}, [selectedAvailableDate, settings, isVisible, hasDateError, hasTimeSlotError])
