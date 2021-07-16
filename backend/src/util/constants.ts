@@ -23,7 +23,7 @@ export const DEFAULT_TIME_SLOT_TAG_LABEL = "Delivery Time"
 export const DEFAULT_SINGLE_DATE_PER_ORDER_MESSAGE = "You can only choose one delivery date per order."
 export const DEFAULT_NO_TIME_SLOT_SELECTED_ERROR = "Please select a time slot before adding to the cart."
 export const DEFAULT_TIME_SLOT_DROPDOWN_DEFAULT_OPTION_LABEL = "Please select..."
-export const DEFAULT_SHOW_ON_PAGE: Page = "CART"
+export const DEFAULT_SHOW_ON_PAGE: Page = "PRODUCT"
 
 export const defaultWidgetStyles: Partial<WidgetStyles> = {
 	errorBorderColor: "#bc6363"
